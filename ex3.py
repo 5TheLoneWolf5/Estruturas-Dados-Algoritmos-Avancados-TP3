@@ -1,63 +1,52 @@
-"""
+aeroportos = {
+    'Aeroporto A': [("Aeroporto B", 1), ("Aeroporto C", 4)],
+    'Aeroporto B': [("Aeroporto A", 1), ("Aeroporto C", 2), ("Aeroporto D", 5)],
+    'Aeroporto C': [("Aeroporto A", 4), ("Aeroporto B", 2), ("Aeroporto D", 1)],
+    'Aeroporto D': [("Aeroporto B", 5), ("Aeroporto C", 1)],
+}
 
-Resultado:
+def dijkstra(graph, start, goal):
+    shortest_distance = {}
+    track_predecessor = {}
+    unseenNodes = dict(graph)
+    infinity = float('inf')
+    track_path = []
 
-   A  B  C  D
-A [0, 1, 1, 0]
-B [1, 0, 0, 1]
-C [1, 0, 0, 1]
-D [0, 1, 1, 0]
+    for node in unseenNodes:
+        shortest_distance[node] = infinity
 
-Resposta:
+    shortest_distance[start] = 0
 
-Se o grafo fosse direcionado, um vértice poderia ter uma relação unidirecional com um outro vértice (por exemplo: A ---> B, mas B não seria conectado com A), assim como também uma relação bidirecional (<--->), caso desejado.
+    while unseenNodes:
+        min_distance_node = None
 
-No caso deste grafo não direcionado, todas arestas criadas entre dois vértices são bidirecionais.
+        for node in unseenNodes:
+            if min_distance_node is None or shortest_distance[node] < shortest_distance[min_distance_node]:
+                min_distance_node = node
 
-"""
+        if min_distance_node is None:
+            break 
 
-class GrafoMatriz:
-    def __init__(self, num_vertices):
-        self.num_vertices = num_vertices
-        self.matriz = [[0] * num_vertices for _ in range(num_vertices)]
-        self.vertices = {}
-        self.indice_para_vertice = {}
-        self.contador = 0
-        
-    def adicionar_vertice(self, vertice):
-        if vertice not in self.vertices and self.contador < self.num_vertices:
-            self.vertices[vertice] = self.contador
-            self.indice_para_vertice[self.contador] = vertice
-            self.contador += 1
+        for child_node, weight in graph[min_distance_node]:
+            if weight + shortest_distance[min_distance_node] < shortest_distance[child_node]:
+                shortest_distance[child_node] = weight + shortest_distance[min_distance_node]
+                track_predecessor[child_node] = min_distance_node
 
-    def adicionar_aresta(self, vertice1, vertice2):
-        if vertice1 in self.vertices and vertice2 in self.vertices:
-            i, j = self.vertices[vertice1], self.vertices[vertice2]
-            self.matriz[i][j] = 1
-            self.matriz[j][i] = 1
+        unseenNodes.pop(min_distance_node)
 
+    currentNode = goal
+    while currentNode != start:
+        try:
+            track_path.insert(0, currentNode)
+            currentNode = track_predecessor[currentNode]
+        except KeyError:
+            return
+    track_path.insert(0, start)
 
-    def mostrar_matriz(self):
-        print("Matriz de Adjacência:")
-        print("  ", "  ".join(self.vertices.keys()))
-        for i, linha in enumerate(self.matriz):
-            print(self.indice_para_vertice[i], linha)
+    if shortest_distance[goal] != infinity:
+        print('Distância mais curta: ' + str(shortest_distance[goal]))
+        print('Caminho é: ' + str(track_path))
+    else:
+        print("Caminho não foi encontrado.")
 
-    def mostrar_vizinhos(self, vertice):
-        if vertice in self.vertices:
-            indice = self.vertices[vertice]
-            vizinhos = [self.indice_para_vertice[i] for i in range(self.num_vertices) if self.matriz[indice][i] == 1]
-            print(f"Vizinhos de {vertice}: {vizinhos}")
-        else:
-            print(f"O vértice {vertice} não existe no grafo.")
-
-grafo = GrafoMatriz(4)
-
-for v in ["A", "B", "C", "D"]:
-    grafo.adicionar_vertice(v)
-
-arestas = [("A", "B"), ("A", "C"), ("B", "D"), ("C", "D")]
-for v1, v2 in arestas:
-    grafo.adicionar_aresta(v1, v2)
-
-grafo.mostrar_matriz()
+dijkstra(aeroportos, 'Aeroporto A', 'Aeroporto D')

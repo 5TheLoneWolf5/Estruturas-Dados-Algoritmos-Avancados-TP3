@@ -1,46 +1,52 @@
-"""
+cidade = {
+    'Bairro A': [("Bairro B", 5), ("Bairro C", 3)],
+    'Bairro B': [("Bairro A", 1), ("Bairro C", 5), ("Bairro D", 4)],
+    'Bairro C': [("Bairro A", 4), ("Bairro B", 8), ("Bairro D", 6)],
+    'Bairro D': [("Bairro B", 7), ("Bairro C", 9)],
+}
 
-Para este exercício, foi implementado uma Lista de Adjacência.
+def dijkstra(graph, start, goal):
+    shortest_distance = {}
+    track_predecessor = {}
+    unseenNodes = dict(graph)
+    infinity = float('inf')
+    track_path = []
 
-Justificação:
+    for node in unseenNodes:
+        shortest_distance[node] = infinity
 
-Se o objetivo for encontrar a rota mais curta entre dois bairros, a Lista de Adjacência com BFS (Breadth-first search) é uma melhor opção por conta da estrutura utilizar menos memória e por guardar apenas as conexões existentes entre os bairros.
+    shortest_distance[start] = 0
 
-"""
+    while unseenNodes:
+        min_distance_node = None
 
-class MapaCidade:
-    def __init__(self):
-        self.lista_adjacencia = {}
+        for node in unseenNodes:
+            if min_distance_node is None or shortest_distance[node] < shortest_distance[min_distance_node]:
+                min_distance_node = node
 
-    def adicionar_vertice(self, vertice):
-        if vertice not in self.lista_adjacencia:
-            self.lista_adjacencia[vertice] = []
+        if min_distance_node is None:
+            break 
 
-    def adicionar_aresta(self, vertice1, vertice2):
-        if vertice1 in self.lista_adjacencia and vertice2 in self.lista_adjacencia:
-            self.lista_adjacencia[vertice1].append(vertice2)
-            self.lista_adjacencia[vertice2].append(vertice1)
+        for child_node, weight in graph[min_distance_node]:
+            if weight + shortest_distance[min_distance_node] < shortest_distance[child_node]:
+                shortest_distance[child_node] = weight + shortest_distance[min_distance_node]
+                track_predecessor[child_node] = min_distance_node
 
-    def bfs(self, inicio):
-        visitados = set()
-        fila = [inicio]
+        unseenNodes.pop(min_distance_node)
 
-        while fila:
-            vertice = fila.pop(0)
-            if vertice not in visitados:
-                print(vertice, end=" ")
-                visitados.add(vertice)
-                fila.extend(self.lista_adjacencia[vertice])
+    currentNode = goal
+    while currentNode != start:
+        try:
+            track_path.insert(0, currentNode)
+            currentNode = track_predecessor[currentNode]
+        except KeyError:
+            return
+    track_path.insert(0, start)
 
-cidade = MapaCidade()
-bairros = ["Centro", "Jardins", "Vila Madalena", "Brooklin", "Moema", "Pinheiros", "Itaim Bibi"]
+    if shortest_distance[goal] != infinity:
+        print('Distância mais curta: ' + str(shortest_distance[goal]))
+        print('Caminho é: ' + str(track_path))
+    else:
+        print("Caminho não foi encontrado.")
 
-for i in bairros:
-    cidade.adicionar_vertice(i)
-
-ruas = [("Centro", "Jardins"), ("Centro", "Pinheiros"), ("Jardins", "Moema"), ("Moema", "Brooklin"), ("Brooklin", "Itaim Bibi"), ("Pinheiros", "Vila Madalena")]
-
-for i, j in ruas:
-    cidade.adicionar_aresta(i, j)
-
-cidade.bfs("Centro")
+dijkstra(cidade, 'Bairro A', 'Bairro D')

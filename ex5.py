@@ -1,81 +1,52 @@
-"""
+cidades = {
+    'Cidade A': [("Cidade B", 1), ("Cidade C", 4)],
+    'Cidade B': [("Cidade A", 1), ("Cidade C", 2), ("Cidade D", 5)],
+    'Cidade C': [("Cidade A", 4), ("Cidade B", 2), ("Cidade D", 1)],
+    'Cidade D': [("Cidade B", 5), ("Cidade C", 1)],
+}
 
-- Resultado:
+def dijkstra(graph, start, goal):
+    shortest_distance = {}
+    track_predecessor = {}
+    unseenNodes = dict(graph)
+    infinity = float('inf')
+    track_path = []
 
-Caminho até chegar em E: ['A', 'C', 'E']. Custo: 9.
+    for node in unseenNodes:
+        shortest_distance[node] = infinity
 
-- Comparação de desempenho:
+    shortest_distance[start] = 0
 
-No quesito de desempenho e memória, a lista de adjacência se sai melhor do que a matriz de adjacência. Isso porque durante a travesia do algoritmo BFS, uma estrutura de matriz de adjacência sempre
-precisa iterar uma quantidade de arestas igual ao número de vértices, afetando a complexidade e o desempenho e memória do programa.
+    while unseenNodes:
+        min_distance_node = None
 
-"""
+        for node in unseenNodes:
+            if min_distance_node is None or shortest_distance[node] < shortest_distance[min_distance_node]:
+                min_distance_node = node
 
-class Grafo:
-    def __init__(self):
-        self.lista_adjacencia = {}
+        if min_distance_node is None:
+            break 
 
-    def adicionar_vertice(self, vertice):
-        if vertice not in self.lista_adjacencia:
-            self.lista_adjacencia[vertice] = []
+        for child_node, weight in graph[min_distance_node]:
+            if weight + shortest_distance[min_distance_node] < shortest_distance[child_node]:
+                shortest_distance[child_node] = weight + shortest_distance[min_distance_node]
+                track_predecessor[child_node] = min_distance_node
 
-    def adicionar_aresta(self, vertice1, vertice2, peso):
-        if vertice1 in self.lista_adjacencia and vertice2 in self.lista_adjacencia:
-            self.lista_adjacencia[vertice1].append((vertice2, peso))
-            self.lista_adjacencia[vertice2].append((vertice1, peso))
-            
-    def mostrar_grafo(self):
-        for vertice in self.lista_adjacencia:
-            print(f"{vertice} -> {self.lista_adjacencia[vertice]}")
+        unseenNodes.pop(min_distance_node)
 
-    def mostrar_vizinhos(self, vertice):
-        if vertice in self.lista_adjacencia:
-            print(f"Vizinhos de {vertice}: {self.lista_adjacencia[vertice]}")
-        else:
-            print(f"O vértice {vertice} não existe no grafo.")
+    currentNode = goal
+    while currentNode != start:
+        try:
+            track_path.insert(0, currentNode)
+            currentNode = track_predecessor[currentNode]
+        except KeyError:
+            return
+    track_path.insert(0, start)
 
-    def bfs(self, vertice1, vertice2):
-        visitados = set()
-        fila = [(0, vertice1, [])]
-        
-        while fila:
-            c, v, p = fila.pop(0)
-            
-            if v in visitados:
-                continue
+    if shortest_distance[goal] != infinity:
+        print('Distância mais curta: ' + str(shortest_distance[goal]))
+        print('Caminho é: ' + str(track_path))
+    else:
+        print("Caminho não foi encontrado.")
 
-            p = p + [v]
-            visitados.add(v)
-            
-            if v == vertice2:
-                return (f"Caminho até chegar em {vertice2}: {p}. Custo: {c}.")
-            
-            for vizinho, peso in self.lista_adjacencia[v]:
-                if vizinho not in visitados:
-                    print(vizinho)
-                    fila.append((c + peso, vizinho, p))
-
-        return float("inf")
-
-grafo = Grafo()
-
-centros = ["A", "B", "C", "D", "E"]
-
-for c in centros:
-    grafo.adicionar_vertice(c)
-
-arestas = [("A", "B", 2), ("A", "C", 4), ("B", "D", 1), ("C", "E", 5), ("D", "E", 3)]
-
-for v1, v2, p in arestas:
-    grafo.adicionar_aresta(v1, v2, p)
-
-print("Lista de Adjacência do Grafo:")
-grafo.mostrar_grafo()
-
-print("Lista de Vizinhos:")
-for c in centros:
-    grafo.mostrar_vizinhos(c)
-
-print("Encontrando rota mais curta entre A e E com BFS: ")
-resultado = grafo.bfs("A", "E")
-print(resultado)
+dijkstra(graph, 'Cidade A', 'Cidade D')

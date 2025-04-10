@@ -1,8 +1,8 @@
-cidade = {
-    'Rua A': [("Rua B", 1), ("Rua C", 4)],
-    'Rua B': [("Rua A", 1), ("Rua C", 2), ("Rua D", 5)],
-    'Rua C': [("Rua A", 4), ("Rua B", 2), ("Rua D", 1)],
-    'Rua D': [("Rua B", 5), ("Rua C", 1)],
+bairros = {
+    'Bairro A': [("Bairro B", 1), ("Bairro C", 4)],
+    'Bairro B': [("Bairro A", 1), ("Bairro C", 2), ("Bairro D", 5)],
+    'Bairro C': [("Bairro A", 4), ("Bairro B", 2), ("Bairro D", 1)],
+    'Bairro D': [("Bairro B", 5), ("Bairro C", 1)],
 }
 
 def dijkstra(graph, start, goal):
@@ -49,4 +49,4 @@ def dijkstra(graph, start, goal):
     else:
         print("Caminho não foi encontrado.")
 
-dijkstra(graph, 'Cidade A', 'Cidade D')
+dijkstra(bairros, 'Bairro A', 'Bairro D')

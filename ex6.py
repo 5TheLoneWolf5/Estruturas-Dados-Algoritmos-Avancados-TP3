@@ -1,11 +1,52 @@
-"""
+cidades = {
+    'Cidade A': [("Cidade B", 1), ("Cidade C", 4)],
+    'Cidade B': [("Cidade A", 1), ("Cidade C", 2), ("Cidade D", 5)],
+    'Cidade C': [("Cidade A", 4), ("Cidade B", 2), ("Cidade D", 1)],
+    'Cidade D': [("Cidade B", 5), ("Cidade C", 1)],
+}
 
-Resposta:
+def dijkstra(graph, start, goal):
+    shortest_distance = {}
+    track_predecessor = {}
+    unseenNodes = dict(graph)
+    infinity = float('inf')
+    track_path = []
 
-Dado um grafo com 1000 vértices e apenas 10 arestas, uma Lista de Adjacência seria a melhor e mais eficiente opção para armazenar os dados.
+    for node in unseenNodes:
+        shortest_distance[node] = infinity
 
-- Em memória: essa estrutura guardará apenas as conexões existentes, sendo bem aplicada em grafos pouco densos como este.
-- Tempo de busca por vizinhos: é mais eficiente pois a estrutura apenas itera pelos dados associados com aquele vértice.
-- Tempo para verificar se uma aresta existe: novamente, apenas as arestas existentes seriam guardadas, o que melhora na eficiência e velocidade da busca para determinar se uma aresta existe.
+    shortest_distance[start] = 0
 
-"""
+    while unseenNodes:
+        min_distance_node = None
+
+        for node in unseenNodes:
+            if min_distance_node is None or shortest_distance[node] < shortest_distance[min_distance_node]:
+                min_distance_node = node
+
+        if min_distance_node is None:
+            break 
+
+        for child_node, weight in graph[min_distance_node]:
+            if weight + shortest_distance[min_distance_node] < shortest_distance[child_node]:
+                shortest_distance[child_node] = weight + shortest_distance[min_distance_node]
+                track_predecessor[child_node] = min_distance_node
+
+        unseenNodes.pop(min_distance_node)
+
+    currentNode = goal
+    while currentNode != start:
+        try:
+            track_path.insert(0, currentNode)
+            currentNode = track_predecessor[currentNode]
+        except KeyError:
+            return
+    track_path.insert(0, start)
+
+    if shortest_distance[goal] != infinity:
+        print('Distância mais curta: ' + str(shortest_distance[goal]))
+        print('Caminho é: ' + str(track_path))
+    else:
+        print("Caminho não foi encontrado.")
+
+dijkstra(graph, 'Cidade A', 'Cidade D')
