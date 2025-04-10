@@ -49,4 +49,4 @@ def dijkstra(graph, start, goal):
     else:
         print("Caminho não foi encontrado.")
 
-dijkstra(aeroportos, 'Cidade A', 'Cidade D')
+dijkstra(aeroportos, 'Aeroporto A', 'Aeroporto D')

@@ -1,8 +1,8 @@
 aeroportos = {
     'Aeroporto A': [("Aeroporto B", 1), ("Aeroporto C", 4)],
-    'Aeroporto B': [("Aeroporto A", 1), ("Aeroporto C", 2), ("Aeroporto D", 5)],
-    'Aeroporto C': [("Aeroporto A", 4), ("Aeroporto B", 2), ("Aeroporto D", 1)],
-    'Aeroporto D': [("Aeroporto B", 5), ("Aeroporto C", 1)],
+    'Aeroporto B': [("Aeroporto A", 4), ("Aeroporto C", 7), ("Aeroporto D", 3)],
+    'Aeroporto C': [("Aeroporto A", 4), ("Aeroporto B", 9), ("Aeroporto D", 4)],
+    'Aeroporto D': [("Aeroporto B", 5), ("Aeroporto C", 2)],
 }
 
 def dijkstra(graph, start, goal):

@@ -1,8 +1,8 @@
 cidades = {
-    'Cruzamento A': [("Cruzamento B", 1), ("Cruzamento C", 4)],
-    'Cruzamento B': [("Cruzamento A", 1), ("Cruzamento C", 2), ("Cruzamento D", 5)],
-    'Cruzamento C': [("Cruzamento A", 4), ("Cruzamento B", 2), ("Cruzamento D", 1)],
-    'Cruzamento D': [("Cruzamento B", 5), ("Cruzamento C", 1)],
+    'Cruzamento A': [("Cruzamento B", 4), ("Cruzamento C", 7)],
+    'Cruzamento B': [("Cruzamento A", 12), ("Cruzamento C", 8), ("Cruzamento D", 5)],
+    'Cruzamento C': [("Cruzamento A", 3), ("Cruzamento B", 5), ("Cruzamento D", 1)],
+    'Cruzamento D': [("Cruzamento B", 5), ("Cruzamento C", 3)],
 }
 
 def dijkstra(graph, start, goal):
@@ -49,4 +49,4 @@ def dijkstra(graph, start, goal):
     else:
         print("Caminho não foi encontrado.")
 
-dijkstra(graph, 'Cruzamento A', 'Cruzamento D')
+dijkstra(cidades, 'Cruzamento A', 'Cruzamento D')
